@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RESERVAYA - Iniciar sesión</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="tarjeta">
+    <div class="marca">
+      <h1>RESERVAYA</h1>
+    </div>
+    <p class="subtitulo">Inicia sesión con tu cuenta</p>
+
+    <div id="alerta" class="alerta"></div>
+
+    <form id="form-login" novalidate>
+      <div class="campo">
+        <label for="email">Correo electrónico</label>
+        <input type="text" id="email" name="email" autocomplete="username" />
+        <span class="mensaje-campo" id="error-email"></span>
+      </div>
+
+      <div class="campo">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" />
+        <span class="mensaje-campo" id="error-password"></span>
+      </div>
+
+      <button type="submit" class="btn-principal" id="btn-login">Iniciar sesión</button>
+    </form>
+
+    <p class="enlace-secundario">
+      ¿No tienes cuenta? <a href="registro.html">Crear cuenta</a>
+    </p>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

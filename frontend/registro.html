@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RESERVAYA - Crear cuenta</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="tarjeta">
+    <div class="marca">
+      <h1>RESERVAYA</h1>
+    </div>
+    <p class="subtitulo">Crea tu cuenta para comenzar</p>
+
+    <div id="alerta" class="alerta"></div>
+
+    <form id="form-registro" novalidate>
+      <div class="campo">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" autocomplete="given-name" />
+        <span class="mensaje-campo" id="error-nombre"></span>
+      </div>
+
+      <div class="campo">
+        <label for="apellido">Apellido</label>
+        <input type="text" id="apellido" name="apellido" autocomplete="family-name" />
+        <span class="mensaje-campo" id="error-apellido"></span>
+      </div>
+
+      <div class="campo">
+        <label for="email">Correo electrónico</label>
+        <input type="text" id="email" name="email" autocomplete="email" />
+        <span class="mensaje-campo" id="error-email"></span>
+      </div>
+
+      <div class="campo">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" autocomplete="new-password" />
+        <span class="mensaje-campo" id="error-password"></span>
+      </div>
+
+      <div class="campo">
+        <label for="confirmPassword">Confirmar contraseña</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" />
+        <span class="mensaje-campo" id="error-confirmPassword"></span>
+      </div>
+
+      <button type="submit" class="btn-principal" id="btn-registro">Crear cuenta</button>
+    </form>
+
+    <p class="enlace-secundario">
+      ¿Ya tienes cuenta? <a href="index.html">Iniciar sesión</a>
+    </p>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/registro.js"></script>
+</body>
+</html>

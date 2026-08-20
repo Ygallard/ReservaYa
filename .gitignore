@@ -1,0 +1,6 @@
+node_modules/
+.env
+*.log
+
+# Guía privada del docente: NO debe subirse al repositorio del proyecto
+docs/BUGS_DOCENTE.md
