@@ -77,6 +77,36 @@ http://localhost:3000
 Esto carga la pantalla de inicio de sesión. Desde ahí puedes navegar a "Crear cuenta" para
 registrar un nuevo usuario.
 
+## Ejecutar con Docker
+
+Requisitos: Docker Desktop instalado y en ejecución.
+
+Desde la raíz del proyecto:
+
+```powershell
+docker compose up --build
+```
+
+Esto inicia el backend en `http://localhost:3000` y una instancia de PostgreSQL. La base de datos
+se crea automáticamente con `database/schema.sql` y `database/seed.sql` en el primer arranque.
+Los datos quedan guardados en el volumen `postgres_data`.
+
+Para detener los contenedores:
+
+```powershell
+docker compose down
+```
+
+Para eliminar también los datos de prueba y reinicializar PostgreSQL:
+
+```powershell
+docker compose down -v
+```
+
+En un entorno de hosting, configura las variables `DB_NAME`, `DB_USER`, `DB_PASSWORD` y
+`SESSION_SECRET` como variables del servicio. Si el proveedor asigna otro puerto público, usa
+`APP_PORT` para el mapeo local de Docker.
+
 ## Estructura del proyecto
 
 ```
