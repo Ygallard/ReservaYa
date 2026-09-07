@@ -77,35 +77,45 @@ http://localhost:3000
 Esto carga la pantalla de inicio de sesión. Desde ahí puedes navegar a "Crear cuenta" para
 registrar un nuevo usuario.
 
-## Ejecutar con Docker
+## Ejecutar con Dockerfile
 
-Requisitos: Docker Desktop instalado y en ejecución.
+Requisitos: Docker Desktop instalado y en ejecución, y una instancia de PostgreSQL accesible desde
+el contenedor. La aplicación se despliega únicamente como una imagen Docker; PostgreSQL debe
+provenir del servicio de base de datos del hosting o de una instalación externa.
 
-Desde la raíz del proyecto:
-
-```powershell
-docker compose up --build
-```
-
-Esto inicia el backend en `http://localhost:3000` y una instancia de PostgreSQL. La base de datos
-se crea automáticamente con `database/schema.sql` y `database/seed.sql` en el primer arranque.
-Los datos quedan guardados en el volumen `postgres_data`.
-
-Para detener los contenedores:
+Desde la raíz del proyecto, crea la imagen:
 
 ```powershell
-docker compose down
+docker build -t reservaya .
 ```
 
-Para eliminar también los datos de prueba y reinicializar PostgreSQL:
+Ejecuta el contenedor proporcionando las variables de conexión a PostgreSQL:
 
 ```powershell
-docker compose down -v
+docker run --name reservaya `
+   -p 3000:3000 `
+   -e PORT=3000 `
+   -e DB_HOST=host.docker.internal `
+   -e DB_PORT=5432 `
+   -e DB_NAME=reservaya `
+   -e DB_USER=postgres `
+   -e DB_PASSWORD=tu_password `
+   -e SESSION_SECRET=una_clave_secreta `
+   reservaya
 ```
 
-En un entorno de hosting, configura las variables `DB_NAME`, `DB_USER`, `DB_PASSWORD` y
-`SESSION_SECRET` como variables del servicio. Si el proveedor asigna otro puerto público, usa
-`APP_PORT` para el mapeo local de Docker.
+La aplicación quedará disponible en `http://localhost:3000`. En el hosting, configura esas
+variables como variables de entorno del servicio y usa el puerto que el proveedor asigne.
+
+Inicializa la base de datos externa ejecutando [database/schema.sql](database/schema.sql) y,
+opcionalmente, [database/seed.sql](database/seed.sql) antes de iniciar la aplicación.
+
+Para detener y eliminar el contenedor:
+
+```powershell
+docker stop reservaya
+docker rm reservaya
+```
 
 ## Estructura del proyecto
 
