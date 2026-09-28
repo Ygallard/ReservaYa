@@ -1,10 +1,10 @@
-# ReservaYa - Requerimientos
+# Requisitos funcionales de ReservaYa v2.0
 
-El alcance funcional vigente se encuentra en [requirements.md](requirements.md) e incluye los requisitos de registro, login y gestión de reservas de ReservaYa v2.0.
+## Alcance
 
-Las cuentas semilla y los datos sugeridos están descritos en [test-data.md](test-data.md). El [historial de versiones](version-history.md) registra el alcance de v1.0 y v2.0.
+ReservaYa es un sistema bajo prueba para actividades de aseguramiento de calidad. La versión incluye registro, autenticación, cierre de sesión, agendamiento y consulta de reservas. Las pantallas de reserva requieren una sesión activa.
 
-## Requisitos funcionales v2.0
+## Requisitos funcionales
 
 | ID | Requisito |
 |---|---|
@@ -19,7 +19,7 @@ Las cuentas semilla y los datos sugeridos están descritos en [test-data.md](tes
 | RF-09 | Un usuario autenticado puede cerrar sesión. |
 | RF-10 | Solo un usuario autenticado puede acceder al agendamiento y a la lista de reservas. |
 | RF-11 | Una reserva contiene fecha, hora y motivo obligatorios. |
-| RF-12 | El sistema guarda la reserva asociada al usuario autenticado, con estado `Confirmada` y fecha de creación. |
+| RF-12 | El sistema guarda la reserva asociada al usuario autenticado, con estado Confirmada y fecha de creación. |
 | RF-13 | El usuario puede visualizar sus reservas con fecha, hora, motivo y estado. |
 | RF-14 | El usuario solo puede consultar sus propias reservas. |
 | RF-15 | Las reservas se muestran en orden ascendente por fecha y hora. |
@@ -29,7 +29,17 @@ Las cuentas semilla y los datos sugeridos están descritos en [test-data.md](tes
 
 ## Requisitos de calidad
 
-- **RF-NF-01:** Las credenciales no válidas no deben revelar si el correo está registrado.
-- **RF-NF-02:** Los datos de reservas de un usuario no deben exponerse a otras cuentas.
-- **RF-NF-03:** La interfaz debe ser utilizable en dispositivos de escritorio y móviles comunes.
-- **RF-NF-04:** PostgreSQL es el almacén persistente para cuentas y reservas.
+- RF-NF-01: Las credenciales no válidas no deben revelar si el correo está registrado.
+- RF-NF-02: Los datos de reservas de un usuario no deben exponerse a otras cuentas.
+- RF-NF-03: La interfaz debe ser utilizable en dispositivos de escritorio y móviles comunes.
+- RF-NF-04: PostgreSQL es el almacén persistente para cuentas y reservas.
+
+## Interfaces bajo prueba
+
+- `POST /api/registro`, `POST /api/login`, `POST /api/logout`, `GET /api/me`
+- `POST /api/reservas`, `GET /api/reservas`
+- `GET /agendar`, `GET /mis-reservas`
+
+## Criterio de aceptación
+
+Una prueba se considera aprobada cuando el resultado observado coincide con el requisito y no altera datos de otra cuenta. Los equipos deben registrar datos, pasos, resultado esperado/actual, estado PASS/FAIL/BLOCKED, severidad, prioridad y evidencia.

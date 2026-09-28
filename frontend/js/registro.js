@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const email = document.getElementById('email');
   const password = document.getElementById('password');
   const confirmPassword = document.getElementById('confirmPassword');
+  const btnRegistro = document.getElementById('btn-registro');
 
   const errores = {
     nombre: document.getElementById('error-nombre'),
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmPassword: document.getElementById('error-confirmPassword'),
   };
 
-  const EMAIL_REGEX = /^[^@]+@[^@]+\.[^@]+$/;
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   form.addEventListener('submit', async (evento) => {
     evento.preventDefault();
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!email.value) {
       errores.email.textContent = 'El correo electrónico es obligatorio.';
       valido = false;
-    } else if (!EMAIL_REGEX.test(email.value)) {
+    } else if (!EMAIL_REGEX.test(email.value.trim())) {
       errores.email.textContent = 'El correo electrónico no tiene un formato válido.';
       valido = false;
     }
@@ -63,23 +64,32 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const { ok, datos } = await solicitar('/api/registro', {
-      method: 'POST',
-      body: JSON.stringify({
-        nombre: nombre.value.trim(),
-        apellido: apellido.value.trim(),
-        email: email.value,
-        password: password.value,
-        confirmPassword: confirmPassword.value,
-      }),
-    });
+    btnRegistro.disabled = true;
+    btnRegistro.textContent = 'Creando cuenta...';
+    try {
+      const { ok, datos } = await solicitar('/api/registro', {
+        method: 'POST',
+        body: JSON.stringify({
+          nombre: nombre.value.trim(),
+          apellido: apellido.value.trim(),
+          email: email.value.trim(),
+          password: password.value,
+          confirmPassword: confirmPassword.value,
+        }),
+      });
 
-    if (!ok) {
-      mostrarAlerta(alerta, datos?.error || 'No fue posible crear la cuenta.', 'error');
-      return;
+      if (!ok) {
+        mostrarAlerta(alerta, datos?.error || 'No fue posible crear la cuenta.', 'error');
+        return;
+      }
+
+      mostrarAlerta(alerta, datos?.message || 'Cuenta creada correctamente.', 'exito');
+      form.reset();
+    } catch (error) {
+      mostrarAlerta(alerta, 'No fue posible conectar con el servidor.', 'error');
+    } finally {
+      btnRegistro.disabled = false;
+      btnRegistro.textContent = 'Crear cuenta';
     }
-
-    mostrarAlerta(alerta, datos?.message || 'Cuenta creada correctamente.', 'exito');
-    form.reset();
   });
 });

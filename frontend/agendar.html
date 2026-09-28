@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RESERVAYA - Agendar hora</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <main class="tarjeta panel-app">
+    <div class="marca"><h1>RESERVAYA</h1></div>
+    <p class="subtitulo">Nueva reserva</p>
+    <div id="alerta" class="alerta" role="status" aria-live="polite"></div>
+    <form id="form-reserva" novalidate>
+      <div class="campo">
+        <label for="fecha">Fecha</label>
+        <input type="date" id="fecha" name="fecha" required />
+        <span class="mensaje-campo" id="error-fecha"></span>
+      </div>
+      <div class="campo">
+        <label for="hora">Hora</label>
+        <input type="time" id="hora" name="hora" required />
+        <span class="mensaje-campo" id="error-hora"></span>
+      </div>
+      <div class="campo">
+        <label for="motivo">Motivo</label>
+        <textarea id="motivo" name="motivo" rows="3" maxlength="500"></textarea>
+        <span class="mensaje-campo" id="error-motivo"></span>
+      </div>
+      <button type="submit" class="btn-principal" id="btn-reservar">Confirmar reserva</button>
+    </form>
+    <p class="enlace-secundario"><a href="/mis-reservas">Ver mis reservas</a> · <a href="/bienvenida.html">Volver</a></p>
+  </main>
+  <script src="/js/api.js"></script>
+  <script src="/js/reservas.js"></script>
+</body>
+</html>

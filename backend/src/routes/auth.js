@@ -4,32 +4,38 @@ const pool = require('../db');
 
 const router = express.Router();
 
-const EMAIL_REGEX = /^[^@]+@[^@]+\.[^@]+$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 router.post('/registro', async (req, res) => {
-  const { nombre, apellido, email, password } = req.body;
+  const { nombre, apellido, email, password, confirmPassword } = req.body;
+  const nombreNormalizado = typeof nombre === 'string' ? nombre.trim() : '';
+  const apellidoNormalizado = typeof apellido === 'string' ? apellido.trim() : '';
+  const emailNormalizado = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-  if (!nombre) {
+  if (!nombreNormalizado) {
     return res.status(400).json({ error: 'El nombre es obligatorio.' });
   }
-  if (!apellido) {
+  if (!apellidoNormalizado) {
     return res.status(400).json({ error: 'El apellido es obligatorio.' });
   }
-  if (!email) {
+  if (!emailNormalizado) {
     return res.status(400).json({ error: 'El correo electrónico es obligatorio.' });
   }
-  if (!EMAIL_REGEX.test(email)) {
+  if (!EMAIL_REGEX.test(emailNormalizado)) {
     return res.status(400).json({ error: 'El correo electrónico no tiene un formato válido.' });
   }
-  if (!password) {
+  if (typeof password !== 'string' || !password) {
     return res.status(400).json({ error: 'La contraseña es obligatoria.' });
   }
-  if (password.length <= 8) {
+  if (typeof password !== 'string' || password.length < 8) {
     return res.status(400).json({ error: 'La contraseña debe tener como mínimo 8 caracteres.' });
+  }
+  if (confirmPassword !== password) {
+    return res.status(400).json({ error: 'La confirmación de contraseña no coincide.' });
   }
 
   try {
-    const existente = await pool.query('SELECT id FROM usuarios WHERE email = $1', [email]);
+    const existente = await pool.query('SELECT id FROM usuarios WHERE LOWER(BTRIM(email)) = $1', [emailNormalizado]);
     if (existente.rows.length > 0) {
       return res.status(409).json({ error: 'Ya existe una cuenta registrada con ese correo electrónico.' });
     }
@@ -39,7 +45,7 @@ router.post('/registro', async (req, res) => {
       `INSERT INTO usuarios (nombre, apellido, email, password)
        VALUES ($1, $2, $3, $4)
        RETURNING id, nombre, apellido, email, created_at`,
-      [nombre, apellido, email, hash]
+      [nombreNormalizado, apellidoNormalizado, emailNormalizado, hash]
     );
 
     return res.status(201).json({
@@ -57,24 +63,25 @@ router.post('/registro', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  const emailNormalizado = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-  if (!email) {
+  if (!emailNormalizado) {
     return res.status(400).json({ error: 'El correo electrónico es obligatorio.' });
   }
-  if (!password) {
+  if (typeof password !== 'string' || !password) {
     return res.status(400).json({ error: 'La contraseña es obligatoria.' });
   }
 
   try {
-    const resultado = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+    const resultado = await pool.query('SELECT * FROM usuarios WHERE LOWER(BTRIM(email)) = $1', [emailNormalizado]);
     if (resultado.rows.length === 0) {
-      return res.status(401).json({ error: 'No existe una cuenta registrada con ese correo electrónico.' });
+      return res.status(401).json({ error: 'El correo electrónico o la contraseña no son válidos.' });
     }
 
     const usuario = resultado.rows[0];
     const coincide = await bcrypt.compare(password, usuario.password);
     if (!coincide) {
-      return res.status(401).json({ error: 'La contraseña ingresada es incorrecta.' });
+      return res.status(401).json({ error: 'El correo electrónico o la contraseña no son válidos.' });
     }
 
     req.session.userId = usuario.id;
@@ -101,6 +108,7 @@ router.post('/logout', (req, res) => {
       console.error('Error en /logout:', error);
       return res.status(500).json({ error: 'No se pudo cerrar la sesión.' });
     }
+    res.clearCookie('connect.sid');
     return res.status(200).json({ message: 'Sesión cerrada correctamente.' });
   });
 });

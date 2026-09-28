@@ -1,145 +1,77 @@
-# RESERVAYA
+# ReservaYa v2.0
 
-Proyecto práctico compuesto por dos módulos: **Registro de usuario** e **Inicio de sesión**.
-Backend en Node.js/Express, frontend en HTML/CSS/JavaScript y base de datos PostgreSQL.
+ReservaYa es una aplicación educativa utilizada como sistema bajo prueba para practicar testing funcional, integración, sistema, regresión, seguridad y usabilidad. Incluye registro/login y gestión básica de reservas. Node.js/Express sirve las páginas del frontend y usa PostgreSQL para persistencia.
 
-## Requisitos previos
+## Inicio con Docker Compose
 
-- Node.js 18 o superior.
-- PostgreSQL instalado localmente.
-- pgAdmin 4.
+Requisito: Docker Desktop actualizado con Docker Compose v2.
 
-## 1. Instalar PostgreSQL
-
-Descarga e instala PostgreSQL desde [postgresql.org](https://www.postgresql.org/download/) y
-recuerda la contraseña que asignes al usuario `postgres`. pgAdmin 4 normalmente se instala junto
-con PostgreSQL.
-
-## 2. Crear la base de datos
-
-1. Abre **pgAdmin 4** y conéctate a tu servidor local de PostgreSQL.
-2. Haz clic derecho sobre **Databases** → **Create** → **Database...**.
-3. Asigna el nombre `reservaya` y guarda.
-
-## 3. Abrir pgAdmin y el Query Tool
-
-1. Selecciona la base de datos `reservaya` en el árbol de pgAdmin.
-2. Haz clic en **Query Tool** (icono de rayo o menú Tools → Query Tool).
-
-## 4. Ejecutar schema.sql
-
-1. Abre el archivo [database/schema.sql](database/schema.sql) con el editor de texto de tu
-   preferencia, copia su contenido y pégalo en el Query Tool de pgAdmin (o usa **Open File** en el
-   Query Tool para cargarlo directamente).
-2. Ejecuta el script (botón ▶ o F5). Esto crea la tabla `usuarios`.
-
-## 5. Ejecutar seed.sql
-
-1. De la misma forma, abre y ejecuta [database/seed.sql](database/seed.sql) en el Query Tool.
-2. Esto inserta dos usuarios de prueba (ver credenciales en `docs/REQUERIMIENTOS.md`).
-
-## 6. Configurar el archivo .env
-
-1. Ve a la carpeta `backend/`.
-2. Copia el archivo `.env.example` y renombra la copia a `.env`.
-3. Edita `.env` con los datos de tu instalación local de PostgreSQL (usuario, contraseña, puerto, etc.).
-
-```
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=reservaya
-DB_USER=postgres
-DB_PASSWORD=tu_password
-PORT=3000
-SESSION_SECRET=una_frase_secreta
-```
-
-## 7. Ejecutar el backend
-
-Desde la carpeta `backend/`:
+Desde la raíz del proyecto:
 
 ```powershell
-cd backend
-npm install
-npm start
+docker compose up --build
 ```
 
-El servidor quedará escuchando en `http://localhost:3000` (o el puerto configurado en `.env`).
+Servicios:
 
-## 8. Abrir el frontend
+| Servicio | Dirección | Credenciales locales |
+|---|---|---|
+| Aplicación | http://localhost:3000 | Las cuentas de prueba indicadas abajo |
+| PostgreSQL | localhost:5432 | base `reservaya`, usuario `postgres`, contraseña `reservaya_local` |
+| pgAdmin | http://localhost:5050 | `admin@reservaya.local` / `ReservayaAdmin2026` |
 
-El backend sirve directamente los archivos del frontend. Simplemente abre en tu navegador:
+pgAdmin ya tiene configurado el servidor `ReservaYa local`; utiliza `postgres` y la contraseña indicada para conectarte. Las credenciales por defecto son solo para un laboratorio local. Para otro entorno, definir `POSTGRES_PASSWORD`, `PGADMIN_PASSWORD` y `SESSION_SECRET` en el entorno antes de iniciar Compose.
 
-```
-http://localhost:3000
-```
+La primera inicialización crea las tablas y carga las cuentas semilla. Los scripts de `database/` solo se ejecutan automáticamente cuando PostgreSQL crea un volumen vacío. Para eliminar el entorno local completo, incluidos los datos, usar `docker compose down -v`; no hacerlo si se desea conservar información.
 
-Esto carga la pantalla de inicio de sesión. Desde ahí puedes navegar a "Crear cuenta" para
-registrar un nuevo usuario.
+## Uso
 
-## Ejecutar con Dockerfile
+1. Abrir http://localhost:3000.
+2. Iniciar sesión con una cuenta de prueba o crear una cuenta propia.
+3. Desde la pantalla de bienvenida, seleccionar **Agendar hora** o **Mis reservas**.
+4. Las páginas y API de reservas requieren sesión. Cada consulta de reservas se limita a la cuenta autenticada.
 
-Requisitos: Docker Desktop instalado y en ejecución, y una instancia de PostgreSQL accesible desde
-el contenedor. La aplicación se despliega únicamente como una imagen Docker; PostgreSQL debe
-provenir del servicio de base de datos del hosting o de una instalación externa.
+Rutas disponibles: `/`, `/registro.html`, `/bienvenida.html`, `/agendar` y `/mis-reservas`.
 
-Desde la raíz del proyecto, crea la imagen:
+## Cuentas de prueba
 
-```powershell
-docker build -t reservaya .
-```
+| Correo | Contraseña |
+|---|---|
+| usuario1@reservaya.cl | Reserva123 |
+| usuario2@reservaya.cl | Reserva456 |
 
-Ejecuta el contenedor proporcionando las variables de conexión a PostgreSQL:
+Para pgAdmin desde el equipo anfitrión, registrar conexión con host `localhost`, puerto `5432`, base `reservaya`, usuario `postgres` y la contraseña configurada.
 
-```powershell
-docker run --name reservaya `
-   -p 3000:3000 `
-   -e PORT=3000 `
-   -e DB_HOST=host.docker.internal `
-   -e DB_PORT=5432 `
-   -e DB_NAME=reservaya `
-   -e DB_USER=postgres `
-   -e DB_PASSWORD=tu_password `
-   -e SESSION_SECRET=una_clave_secreta `
-   reservaya
-```
+## Ejecución local sin Docker
 
-La aplicación quedará disponible en `http://localhost:3000`. En el hosting, configura esas
-variables como variables de entorno del servicio y usa el puerto que el proveedor asigne.
+Requisitos: Node.js 18+ y PostgreSQL 14+.
 
-Inicializa la base de datos externa ejecutando [database/schema.sql](database/schema.sql) y,
-opcionalmente, [database/seed.sql](database/seed.sql) antes de iniciar la aplicación.
+1. Crear una base `reservaya` y ejecutar `database/schema.sql`, luego `database/seed.sql`.
+2. En `backend/`, instalar dependencias con `npm ci`.
+3. Configurar las variables de conexión del backend según `backend/.env.example`.
+4. Ejecutar `npm start` desde `backend/`.
+5. Abrir http://localhost:3000.
 
-Para detener y eliminar el contenedor:
+## Base de datos
 
-```powershell
-docker stop reservaya
-docker rm reservaya
-```
+`database/schema.sql` es idempotente para agregar las tablas e índices requeridos sin eliminar las tablas existentes. En instalaciones existentes debe ejecutarse manualmente contra `reservaya`; Compose no vuelve a ejecutar los scripts de inicialización sobre un volumen ya creado. Las tablas son `usuarios` y `reservas`; esta última referencia `usuarios.id` mediante clave foránea.
 
-## Estructura del proyecto
+## API
 
-```
-ReservaYa/
-├── backend/            Servidor Express, rutas de la API y conexión a PostgreSQL
-├── frontend/            Páginas HTML, CSS y JavaScript del cliente
-├── database/            Scripts SQL: schema.sql y seed.sql
-├── docs/
-│   └── REQUERIMIENTOS.md   Documento de requerimientos para el equipo de QA
-└── README.md
-```
+| Método | Ruta | Uso |
+|---|---|---|
+| POST | `/api/registro` | Crear una cuenta |
+| POST | `/api/login` | Iniciar sesión |
+| POST | `/api/logout` | Cerrar sesión |
+| GET | `/api/me` | Consultar sesión |
+| POST | `/api/reservas` | Crear una reserva (sesión requerida) |
+| GET | `/api/reservas` | Consultar reservas propias (sesión requerida) |
 
-## API disponible
+## Documentación QA
 
-| Método | Ruta            | Descripción                          |
-|--------|-----------------|---------------------------------------|
-| POST   | `/api/registro` | Crea una nueva cuenta de usuario.     |
-| POST   | `/api/login`    | Inicia sesión con correo y contraseña. |
-| POST   | `/api/logout`   | Cierra la sesión activa.              |
-| GET    | `/api/me`       | Consulta si hay una sesión activa.    |
+- [Requisitos funcionales](docs/requirements.md)
+- [Datos de prueba](docs/test-data.md)
+- [Historial de versiones](docs/version-history.md)
+- [Instrucciones anteriores](docs/REQUERIMIENTOS.md)
 
-## Documentación
-
-El documento [docs/REQUERIMIENTOS.md](docs/REQUERIMIENTOS.md) contiene el alcance y los
-requerimientos funcionales entregados al equipo de QA para el análisis, diseño y ejecución de
-sus pruebas.
+`docs/teacher-answer-key.md` y `docs/BUGS_DOCENTE.md` son material exclusivo del docente. No distribuirlos a estudiantes ni publicar `docs/` en un servidor web.

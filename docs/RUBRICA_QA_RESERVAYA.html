@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Rúbrica QA - RESERVAYA</title>
+  <style>
+    @page { size: A4; margin: 16mm 15mm 17mm; }
+    :root { --ink: #1d2733; --muted: #586575; --blue: #155e75; --teal: #0f766e; --light: #eef7f6; --line: #cbd5e1; --warn: #fff7ed; --red: #9f1239; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); font-family: "Segoe UI", Arial, sans-serif; font-size: 10.2pt; line-height: 1.42; }
+    h1, h2, h3 { color: var(--blue); margin: 0 0 8px; line-height: 1.15; }
+    h1 { font-size: 28pt; letter-spacing: .2px; }
+    h2 { font-size: 17pt; border-bottom: 2px solid var(--teal); padding-bottom: 5px; margin-top: 20px; }
+    h3 { font-size: 12pt; margin-top: 14px; }
+    p { margin: 5px 0 8px; }
+    .cover { min-height: 245mm; display: flex; flex-direction: column; justify-content: center; padding: 12mm 7mm; page-break-after: always; }
+    .eyebrow { color: var(--teal); font-weight: 700; letter-spacing: 1.7px; text-transform: uppercase; font-size: 9pt; }
+    .subtitle { font-size: 15pt; color: var(--muted); max-width: 145mm; margin: 14px 0 26px; }
+    .meta { border-left: 5px solid var(--teal); padding: 9px 14px; background: var(--light); max-width: 150mm; }
+    .meta strong { color: var(--blue); }
+    .note { background: var(--warn); border-left: 4px solid #f59e0b; padding: 8px 11px; margin: 9px 0; }
+    .small { color: var(--muted); font-size: 9pt; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .metric { border: 1px solid var(--line); padding: 9px 11px; border-radius: 4px; }
+    .metric b { display: block; color: var(--teal); font-size: 15pt; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 13px; page-break-inside: auto; }
+    thead { display: table-header-group; }
+    tr { page-break-inside: avoid; }
+    th { background: var(--blue); color: white; font-weight: 700; text-align: left; }
+    th, td { border: 1px solid var(--line); padding: 5px 6px; vertical-align: top; }
+    td { background: #fff; }
+    .compact th, .compact td { font-size: 8.2pt; padding: 4px 5px; }
+    .tag { display: inline-block; padding: 1px 5px; border-radius: 3px; background: #e0f2fe; color: #075985; font-size: 8.3pt; font-weight: 700; }
+    .high { background: #ffe4e6; color: var(--red); }
+    .medium { background: #fef3c7; color: #92400e; }
+    .low { background: #dcfce7; color: #166534; }
+    .page-break { page-break-before: always; }
+    ul, ol { margin-top: 4px; padding-left: 21px; }
+    li { margin: 2px 0; }
+    .case { border: 1px solid var(--line); margin: 9px 0; padding: 9px 11px; page-break-inside: avoid; }
+    .case h3 { margin: 0 0 5px; }
+    .case p { margin: 3px 0; }
+    .footer { color: var(--muted); border-top: 1px solid var(--line); padding-top: 5px; margin-top: 16px; font-size: 8.5pt; }
+    .score { font-weight: 700; text-align: center; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div class="eyebrow">Documento de evaluación · Control de calidad</div>
+    <h1>Rúbrica QA<br>RESERVAYA</h1>
+    <div class="subtitle">Evaluación del análisis y las pruebas de los módulos de Registro de usuario e Inicio de sesión.</div>
+    <div class="meta">
+      <p><strong>Versión evaluada:</strong> primera versión funcional</p>
+      <p><strong>Fuente de referencia:</strong> requerimientos del sistema y registro docente de defectos</p>
+      <p><strong>Resultado esperado:</strong> identificar, reproducir, categorizar y documentar los 10 bugs intencionales</p>
+    </div>
+    <p class="small" style="margin-top: 24px;">Documento preparado para revisión del equipo QA.</p>
+  </section>
+
+  <h2>1. Objetivo del equipo QA</h2>
+  <p>Evaluar que los módulos de registro e inicio de sesión cumplan los requerimientos funcionales y las reglas de negocio definidas, mediante pruebas de interfaz, API, sesión y persistencia de datos.</p>
+  <p>El equipo debe entregar evidencia suficiente para que otra persona pueda entender el defecto, repetirlo y confirmar el resultado sin depender de explicaciones verbales.</p>
+
+  <h2>2. Alcance</h2>
+  <div class="grid">
+    <div class="metric"><b>Módulo 1</b>Registro de usuario: campos obligatorios, formato de correo, contraseña, confirmación, unicidad y respuesta exitosa.</div>
+    <div class="metric"><b>Módulo 2</b>Inicio de sesión: credenciales válidas/incorrectas, mensajes, sensibilidad del correo y cierre de sesión.</div>
+    <div class="metric"><b>API</b><code>/api/registro</code>, <code>/api/login</code>, <code>/api/logout</code> y <code>/api/me</code>.</div>
+    <div class="metric"><b>Datos</b>Verificación en PostgreSQL/pgAdmin de duplicados, espacios, nombres y contraseñas protegidas.</div>
+  </div>
+  <div class="note"><strong>Fuera de alcance:</strong> reservas, pagos y panel de administración; no forman parte de esta versión.</div>
+
+  <h2>3. Categorización de problemas</h2>
+  <table class="compact">
+    <thead><tr><th>Categoría</th><th>Qué se evalúa</th><th>Bug relacionados</th></tr></thead>
+    <tbody>
+      <tr><td>Validación y límites</td><td>Reglas obligatorias, longitud mínima y formato válido.</td><td>BUG-01, BUG-08, BUG-09</td></tr>
+      <tr><td>Integridad de datos</td><td>Unicidad y normalización de valores antes de comparar o guardar.</td><td>BUG-02, BUG-03</td></tr>
+      <tr><td>Reglas en backend</td><td>El servidor debe aplicar las reglas aunque se omita la interfaz.</td><td>BUG-04, BUG-08</td></tr>
+      <tr><td>Concurrencia y UX</td><td>Control de envíos repetidos y consistencia de mensajes.</td><td>BUG-05</td></tr>
+      <tr><td>Autenticación y seguridad</td><td>Mensajes no reveladores, acceso con correo normalizado y protección post-cierre.</td><td>BUG-06, BUG-07, BUG-10</td></tr>
+    </tbody>
+  </table>
+
+  <h2>4. Pruebas realizadas</h2>
+  <table class="compact">
+    <thead><tr><th>Tipo</th><th>Propósito</th><th>Ejemplos</th></tr></thead>
+    <tbody>
+      <tr><td>Funcionales UI</td><td>Comprobar flujos normales y validaciones visibles.</td><td>Registro válido, campos vacíos, contraseña de 8 caracteres, login correcto/incorrecto.</td></tr>
+      <tr><td>Límites y negativos</td><td>Explorar valores frontera y entradas inválidas.</td><td>8 caracteres, espacios, correo con mayúsculas y correo con espacio interno.</td></tr>
+      <tr><td>API / caja negra</td><td>Verificar que el backend no dependa de la validación del navegador.</td><td><code>POST /api/registro</code> sin confirmación o con nombre compuesto por espacios.</td></tr>
+      <tr><td>Persistencia</td><td>Confirmar el efecto real en la base de datos.</td><td>Duplicados por capitalización/espacios y valores almacenados en <code>usuarios</code>.</td></tr>
+      <tr><td>Sesión y navegación</td><td>Comprobar el estado después de cerrar sesión.</td><td>Logout y botón Atrás del navegador; consulta de sesión activa.</td></tr>
+      <tr><td>Repetición / concurrencia</td><td>Detectar solicitudes duplicadas y respuestas contradictorias.</td><td>Doble clic o varios Enter en Crear cuenta.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Rúbrica de evaluación</h2>
+  <p>La calificación sugerida es de <strong>100 puntos</strong>. Se considera aprobado el trabajo que demuestra evidencia reproducible y cubre los defectos que correspondan al alcance.</p>
+  <table class="compact">
+    <thead><tr><th>Criterio</th><th>Indicador de logro</th><th class="score">Puntos</th></tr></thead>
+    <tbody>
+      <tr><td>Objetivo como equipo QA</td><td>Define el propósito de las pruebas y relaciona calidad con requerimientos y reglas de negocio.</td><td class="score">10</td></tr>
+      <tr><td>Alcance</td><td>Incluye registro, login, sesión, API y BD; distingue lo incluido de reservas/pagos/administración.</td><td class="score">10</td></tr>
+      <tr><td>Categorización</td><td>Clasifica los problemas por validación, datos, backend, UX, autenticación y seguridad de forma coherente.</td><td class="score">10</td></tr>
+      <tr><td>Pruebas realizadas</td><td>Describe casos positivos, negativos, límites, API, persistencia, repetición y navegación.</td><td class="score">15</td></tr>
+      <tr><td>Correspondencia de bugs</td><td>Identifica correctamente los 10 bugs intencionales y los relaciona con el módulo/requerimiento afectado.</td><td class="score">20</td></tr>
+      <tr><td>Evidencia clara</td><td>Entrega capturas, respuestas HTTP, datos de BD o registros de red con contexto, fecha/caso y resultado.</td><td class="score">15</td></tr>
+      <tr><td>Pasos para reproducir</td><td>Cada reporte contiene precondiciones, datos, pasos numerados, resultado esperado y resultado actual.</td><td class="score">10</td></tr>
+      <tr><td>Conclusión QA</td><td>Resume riesgos, severidad/prioridad, impacto y recomendación de corrección o regresión.</td><td class="score">10</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="page-break">6. Matriz de bugs esperados</h2>
+  <table class="compact">
+    <thead><tr><th>ID / módulo</th><th>Problema y requerimiento</th><th>Sev.</th><th>Prior.</th><th>Evidencia mínima</th></tr></thead>
+    <tbody>
+      <tr><td><strong>BUG-01</strong><br>Registro</td><td>Contraseña de exactamente 8 caracteres rechazada por límite incorrecto.<br><span class="small">REQ-REG-007</span></td><td><span class="tag medium">Media</span></td><td><span class="tag high">Alta</span></td><td>Captura del formulario y respuesta 400 del servidor.</td></tr>
+      <tr><td><strong>BUG-02</strong><br>Registro</td><td>Correo duplicado con mayúsculas se acepta.<br><span class="small">REQ-REG-005</span></td><td><span class="tag high">Alta</span></td><td><span class="tag high">Alta</span></td><td>Solicitud exitosa y dos filas equivalentes en BD.</td></tr>
+      <tr><td><strong>BUG-03</strong><br>Registro</td><td>Espacio al inicio/final del correo no se elimina y permite otra cuenta.<br><span class="small">REQ-REG-005</span></td><td><span class="tag medium">Media</span></td><td><span class="tag medium">Media</span></td><td>Valor con espacio visible en consulta de BD.</td></tr>
+      <tr><td><strong>BUG-04</strong><br>Registro / API</td><td>Backend no valida confirmación de contraseña ausente o diferente.<br><span class="small">REQ-REG-008</span></td><td><span class="tag high">Alta</span></td><td><span class="tag high">Alta</span></td><td>POST reproducible, código 201 y cuenta creada.</td></tr>
+      <tr><td><strong>BUG-05</strong><br>Registro</td><td>Dobles envíos generan solicitudes y mensajes contradictorios.</td><td><span class="tag medium">Baja-Media</span></td><td><span class="tag medium">Media</span></td><td>Registro de red con solicitudes repetidas.</td></tr>
+      <tr><td><strong>BUG-06</strong><br>Login</td><td>Mensajes distintos permiten saber si el correo existe.</td><td><span class="tag medium">Media</span></td><td><span class="tag medium">Media</span></td><td>Comparación de dos respuestas 401.</td></tr>
+      <tr><td><strong>BUG-07</strong><br>Login</td><td>Correo con mayúsculas no permite login con contraseña correcta.</td><td><span class="tag medium">Media</span></td><td><span class="tag medium">Media</span></td><td>Respuesta de cuenta inexistente y credenciales usadas.</td></tr>
+      <tr><td><strong>BUG-08</strong><br>Registro / API</td><td>Nombre o apellido compuesto solo por espacios es aceptado.</td><td><span class="tag medium">Media</span></td><td><span class="tag medium">Media</span></td><td>POST exitoso y campo de espacios en BD.</td></tr>
+      <tr><td><strong>BUG-09</strong><br>Registro / Login</td><td>Correo con espacio interno pasa el formato y se almacena.</td><td><span class="tag medium">Baja-Media</span></td><td><span class="tag medium">Media</span></td><td>Valor inválido aceptado y registro en BD.</td></tr>
+      <tr><td><strong>BUG-10</strong><br>Login / Sesión</td><td>Tras logout, Atrás puede mostrar contenido de bienvenida desde bfcache.</td><td><span class="tag high">Alta</span></td><td><span class="tag high">Alta</span></td><td>Video/capturas de navegación y estado de sesión 401.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>7. Casos de prueba y reproducción</h2>
+  <div class="case"><h3>CP-01 · Límite de contraseña</h3><p><strong>Datos:</strong> usuario válido y <code>Abcd1234</code> en ambos campos.</p><p><strong>Pasos:</strong> abrir Registro → completar datos → enviar → observar respuesta.</p><p><strong>Esperado:</strong> cuenta creada. <strong>Actual a reportar:</strong> rechazo por mínimo de 8 caracteres. Evidencia: captura y respuesta HTTP.</p></div>
+  <div class="case"><h3>CP-02 · Duplicidad normalizada</h3><p><strong>Precondición:</strong> existe <code>usuario1@reservaya.cl</code>. Registrar <code>Usuario1@reservaya.cl</code> y luego un correo con espacio final.</p><p><strong>Esperado:</strong> rechazo por correo existente y normalización. <strong>Actual:</strong> cuentas distintas o valor con espacio persistido. Evidencia: consulta de <code>usuarios</code>.</p></div>
+  <div class="case"><h3>CP-03 · Validaciones solo en frontend</h3><p><strong>Datos:</strong> POST directo a <code>/api/registro</code> con <code>confirmPassword</code> diferente/ausente y con <code>nombre: "   "</code>.</p><p><strong>Esperado:</strong> HTTP 400. <strong>Actual:</strong> registro aceptado. Evidencia: cuerpo de solicitud/respuesta y fila creada.</p></div>
+  <div class="case"><h3>CP-04 · Envío repetido</h3><p><strong>Pasos:</strong> completar registro válido → doble clic rápido o pulsar Enter varias veces → revisar Network y alertas.</p><p><strong>Esperado:</strong> una sola operación controlada. <strong>Actual:</strong> solicitudes múltiples y posible contradicción de mensajes.</p></div>
+  <div class="case"><h3>CP-05 · Mensajes y capitalización en login</h3><p><strong>Datos:</strong> correo inexistente; luego <code>usuario1@reservaya.cl</code> con contraseña errónea; finalmente <code>USUARIO1@RESERVAYA.CL</code> con <code>Reserva123</code>.</p><p><strong>Esperado:</strong> mensaje genérico y acceso con correo equivalente. <strong>Actual:</strong> mensajes diferenciados y rechazo por capitalización.</p></div>
+  <div class="case"><h3>CP-06 · Protección tras logout</h3><p><strong>Pasos:</strong> iniciar sesión → llegar a bienvenida → cerrar sesión → usar Atrás → observar pantalla y consultar sesión.</p><p><strong>Esperado:</strong> no mostrar contenido autenticado. <strong>Actual:</strong> contenido puede quedar visible brevemente por bfcache. Evidencia: video/capturas con navegador y resultado.</p></div>
+
+  <h2>8. Evidencia y decisión QA</h2>
+  <p>Un reporte se considera bien sustentado cuando incluye: ID único, módulo, requerimiento, entorno/navegador, precondiciones, datos de prueba, pasos numerados, resultado esperado, resultado actual, severidad, prioridad y una evidencia verificable.</p>
+  <p>Los bugs BUG-01 a BUG-10 corresponden al alcance de esta evaluación porque afectan directamente Registro, Inicio de sesión, API, persistencia o control de sesión. BUG-06 y BUG-10 son hallazgos de seguridad/experiencia derivados de buenas prácticas y del requisito de acceso con sesión, aunque no todos sus detalles estén redactados literalmente en los requerimientos.</p>
+  <div class="note"><strong>Conclusión QA:</strong> la versión no debería considerarse lista para aprobación sin corregir primero BUG-02, BUG-04 y BUG-10 por su impacto en unicidad, validación del servidor y exposición de contenido tras el cierre de sesión. Luego se recomienda ejecutar regresión completa de los casos CP-01 a CP-06 y verificar que las reglas se apliquen tanto en UI como en API.</div>
+
+  <div class="footer">RESERVAYA · Rúbrica QA · Documento de trabajo basado en REQUERIMIENTOS.md y BUGS_DOCENTE.md</div>
+</body>
+</html>

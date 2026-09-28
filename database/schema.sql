@@ -9,3 +9,33 @@ CREATE TABLE IF NOT EXISTS usuarios (
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM usuarios
+        GROUP BY LOWER(BTRIM(email))
+        HAVING COUNT(*) > 1
+    ) THEN
+        CREATE UNIQUE INDEX IF NOT EXISTS usuarios_email_normalizado_unique
+            ON usuarios (LOWER(BTRIM(email)));
+    ELSE
+        RAISE NOTICE 'Se conserva el índice de correo exacto: hay cuentas heredadas que requieren revisión manual.';
+    END IF;
+END;
+$$;
+
+CREATE TABLE IF NOT EXISTS reservas (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    motivo TEXT NOT NULL DEFAULT '',
+    estado VARCHAR(20) NOT NULL DEFAULT 'Pendiente',
+    fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
+    CONSTRAINT reservas_estado_valido CHECK (estado IN ('Pendiente', 'Confirmada', 'Cancelada'))
+);
+
+CREATE INDEX IF NOT EXISTS reservas_usuario_fecha_hora_idx
+    ON reservas (usuario_id, fecha, hora);

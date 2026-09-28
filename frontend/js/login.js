@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const { ok, datos } = await solicitar('/api/login', {
       method: 'POST',
-      body: JSON.stringify({ email: email.value, password: password.value }),
+      body: JSON.stringify({ email: email.value.trim(), password: password.value }),
     });
 
     btn.disabled = false;

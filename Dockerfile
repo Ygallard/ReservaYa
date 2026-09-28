@@ -1,10 +1,4 @@
-FROM python:3.12-slim
-
-RUN apt-get update \
-	&& apt-get install -y --no-install-recommends nodejs npm ca-certificates \
-	&& groupadd --system app \
-	&& useradd --system --gid app --create-home app \
-	&& rm -rf /var/lib/apt/lists/*
+FROM node:20-alpine
 
 WORKDIR /app/backend
 
@@ -18,7 +12,5 @@ ENV NODE_ENV=production
 ENV PORT=3000
 
 EXPOSE 3000
-
-USER app
 
 CMD ["npm", "start"]

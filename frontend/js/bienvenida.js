@@ -1,6 +1,7 @@
-document.addEventListener('DOMContentLoaded', async () => {
+async function verificarSesion() {
   const titulo = document.getElementById('titulo-bienvenida');
   const btnLogout = document.getElementById('btn-logout');
+  if (!titulo || !btnLogout) return;
 
   const { ok, datos } = await solicitar('/api/me');
 
@@ -11,8 +12,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   titulo.textContent = `Bienvenido, ${datos.usuario.nombre}`;
 
-  btnLogout.addEventListener('click', async () => {
-    await solicitar('/api/logout', { method: 'POST' });
-    window.location.href = 'index.html';
-  });
+  if (!btnLogout.dataset.bound) {
+    btnLogout.dataset.bound = 'true';
+    btnLogout.addEventListener('click', async () => {
+      await solicitar('/api/logout', { method: 'POST' });
+      window.location.href = 'index.html';
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', verificarSesion);
+window.addEventListener('pageshow', (evento) => {
+  if (evento.persisted) verificarSesion();
 });
