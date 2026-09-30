@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const pool = require('../db');
+const store = require('../data/store');
 
 const router = express.Router();
 
@@ -35,27 +35,31 @@ router.post('/registro', async (req, res) => {
   }
 
   try {
-    const existente = await pool.query('SELECT id FROM usuarios WHERE LOWER(BTRIM(email)) = $1', [emailNormalizado]);
-    if (existente.rows.length > 0) {
+    if (store.buscarUsuarioPorEmail(emailNormalizado)) {
       return res.status(409).json({ error: 'Ya existe una cuenta registrada con ese correo electrónico.' });
     }
-
     const hash = await bcrypt.hash(password, 10);
-    const resultado = await pool.query(
-      `INSERT INTO usuarios (nombre, apellido, email, password)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, nombre, apellido, email, created_at`,
-      [nombreNormalizado, apellidoNormalizado, emailNormalizado, hash]
-    );
+    const usuario = store.crearUsuario({
+      nombre: nombreNormalizado,
+      apellido: apellidoNormalizado,
+      email: emailNormalizado,
+      password: hash,
+    });
+    if (!usuario) {
+      return res.status(409).json({ error: 'Ya existe una cuenta registrada con ese correo electrónico.' });
+    }
 
     return res.status(201).json({
       message: 'Cuenta creada correctamente. Ahora puedes iniciar sesión.',
-      usuario: resultado.rows[0],
+      usuario: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        email: usuario.email,
+        created_at: usuario.created_at,
+      },
     });
   } catch (error) {
-    if (error.code === '23505') {
-      return res.status(409).json({ error: 'Ya existe una cuenta registrada con ese correo electrónico.' });
-    }
     console.error('Error en /registro:', error);
     return res.status(500).json({ error: 'Ocurrió un error al crear la cuenta. Intenta nuevamente.' });
   }
@@ -73,12 +77,11 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    const resultado = await pool.query('SELECT * FROM usuarios WHERE LOWER(BTRIM(email)) = $1', [emailNormalizado]);
-    if (resultado.rows.length === 0) {
+    const usuario = store.buscarUsuarioPorEmail(emailNormalizado);
+    if (!usuario) {
       return res.status(401).json({ error: 'El correo electrónico o la contraseña no son válidos.' });
     }
 
-    const usuario = resultado.rows[0];
     const coincide = await bcrypt.compare(password, usuario.password);
     if (!coincide) {
       return res.status(401).json({ error: 'El correo electrónico o la contraseña no son válidos.' });

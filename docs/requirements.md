@@ -1,4 +1,4 @@
-# Requisitos funcionales de ReservaYa v2.1
+# Requisitos funcionales de ReservaYa v2.2
 
 ## Alcance
 
@@ -38,8 +38,9 @@ ReservaYa es un sistema bajo prueba para actividades de aseguramiento de calidad
 - RF-NF-01: Las credenciales no válidas no deben revelar si el correo está registrado.
 - RF-NF-02: Los datos de reservas de un usuario no deben exponerse a otras cuentas.
 - RF-NF-03: La interfaz debe ser utilizable en dispositivos de escritorio y móviles comunes.
-- RF-NF-04: PostgreSQL es el almacén persistente para cuentas y reservas.
-- RF-NF-05: La aplicación se ejecuta localmente con Node.js, npm y PostgreSQL.
+- RF-NF-04: Las cuentas y reservas se mantienen en arrays de JavaScript durante la ejecución del servidor.
+- RF-NF-05: Al reiniciar el servidor, las cuentas creadas y reservas se pierden; se vuelven a cargar las cuentas demo.
+- RF-NF-06: La aplicación se ejecuta localmente con Node.js y npm, sin servicios externos.
 
 ## Interfaces bajo prueba
 

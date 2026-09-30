@@ -24,4 +24,11 @@ Nuevas funcionalidades:
 
 - Correcciones y ajustes de la aplicación.
 - Nuevo conjunto de defectos intencionales para laboratorio QA.
-- Ejecución local con Node.js, npm y PostgreSQL.
+- Ejecución local simplificada con Node.js y npm.
+
+### v2.2
+
+- Migración del almacenamiento a arrays en memoria.
+- Eliminación de la dependencia de servicios de base de datos y archivos SQL.
+- Conservación del conjunto vigente de defectos controlados para actividades de testing.
+- Los datos creados durante una ejecución se pierden al reiniciar el servidor.

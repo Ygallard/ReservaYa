@@ -2,14 +2,14 @@
 
 ## Cuentas semilla
 
-La inicialización de PostgreSQL crea estas cuentas de laboratorio:
+Al iniciar el servidor se cargan estas cuentas demo en el arreglo de usuarios desde `backend/src/data/test-data.js`:
 
 | Correo | Contraseña | Nombre |
 |---|---|---|
 | usuario1@reservaya.cl | Reserva123 | Ana Torres |
 | usuario2@reservaya.cl | Reserva456 | Bruno Salinas |
 
-Las contraseñas se guardan como hashes bcrypt en la base de datos. No reutilizar estas credenciales fuera del entorno local educativo.
+Las contraseñas se guardan como hashes bcrypt en memoria. No reutilizar estas credenciales fuera del entorno educativo local.
 
 ## Datos sugeridos para pruebas
 
@@ -32,7 +32,7 @@ Las contraseñas se guardan como hashes bcrypt en la base de datos. No reutiliza
 | Visualización | Verificar una reserva futura en un equipo configurado con zona horaria local |
 | Fecha pasada | Una fecha anterior a hoy |
 
-Cada equipo debe inventar y anotar correos únicos para evitar colisiones. Para probar aislamiento, utilizar dos cuentas y crear reservas distintas para cada una. Los casos con más de 10 reservas pueden usar fechas futuras diferentes para cada registro.
+Cada equipo debe inventar y anotar correos únicos para evitar colisiones. Para probar aislamiento, utilizar dos cuentas y crear reservas distintas para cada una. Los casos con más de 10 reservas pueden usar fechas futuras diferentes para cada registro. Los datos creados durante las pruebas se pierden al reiniciar el servidor; solo las cuentas demo se cargan nuevamente.
 
 ## PASS / FAIL / BLOCKED
 

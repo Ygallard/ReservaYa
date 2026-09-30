@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('../db');
+const store = require('../data/store');
 
 const router = express.Router();
 
@@ -33,38 +33,23 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'El motivo es obligatorio.' });
   }
 
-  try {
-    const resultado = await pool.query(
-      `INSERT INTO reservas (usuario_id, fecha, hora, motivo, estado)
-       VALUES ($1, $2, $3, $4, 'Confirmada')
-       RETURNING id, fecha, hora, motivo, estado, fecha_creacion`,
-      [req.session.userId, fecha, hora, typeof motivo === 'string' ? motivo.trim() : '']
-    );
-    return res.status(201).json({ message: 'Reserva confirmada correctamente.', reserva: resultado.rows[0] });
-  } catch (error) {
-    if (error.code === '23505') {
-      return res.status(409).json({ error: 'Ya tienes una reserva para esa fecha y hora.' });
-    }
-    console.error('Error en POST /api/reservas:', error);
-    return res.status(500).json({ error: 'No fue posible crear la reserva.' });
+  const reserva = store.crearReserva({
+    usuario_id: req.session.userId,
+    fecha,
+    hora,
+    motivo: motivo.trim(),
+  });
+  if (!reserva) {
+    return res.status(409).json({ error: 'Ya tienes una reserva para esa fecha y hora.' });
   }
+  return res.status(201).json({
+    message: 'Reserva confirmada correctamente.',
+    reserva: store.reservaPublica(reserva),
+  });
 });
 
-router.get('/', async (req, res) => {
-  try {
-    const resultado = await pool.query(
-      `SELECT id, fecha, hora, motivo, estado, fecha_creacion
-       FROM reservas
-       WHERE usuario_id = $1
-        ORDER BY fecha ASC, hora ASC
-        LIMIT 10`,
-      [req.session.userId]
-    );
-    return res.status(200).json({ reservas: resultado.rows });
-  } catch (error) {
-    console.error('Error en GET /api/reservas:', error);
-    return res.status(500).json({ error: 'No fue posible consultar las reservas.' });
-  }
+router.get('/', (req, res) => {
+  return res.status(200).json({ reservas: store.listarReservasPorUsuario(req.session.userId) });
 });
 
 module.exports = router;
