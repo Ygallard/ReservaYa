@@ -1,4 +1,4 @@
-# Requisitos funcionales de ReservaYa v2.0
+# Requisitos funcionales de ReservaYa v2.1
 
 ## Alcance
 
@@ -26,6 +26,12 @@ ReservaYa es un sistema bajo prueba para actividades de aseguramiento de calidad
 | RF-16 | La fecha de una nueva reserva debe ser hoy o posterior. |
 | RF-17 | Las horas disponibles son de 09:00 a 17:00, inclusive. |
 | RF-18 | Un usuario no puede reservar más de una vez el mismo horario. |
+| RF-19 | Las horas disponibles comienzan en intervalos de 30 minutos. |
+| RF-20 | Para una reserva de hoy, la hora debe ser posterior a la hora actual. |
+| RF-21 | El motivo debe contener entre 1 y 500 caracteres después de eliminar espacios externos. |
+| RF-22 | La consulta muestra todas las reservas del usuario autenticado. |
+| RF-23 | La fecha se presenta en formato día/mes/año. |
+| RF-24 | La interfaz informa el horario de atención vigente de 09:00 a 17:00. |
 
 ## Requisitos de calidad
 
@@ -33,6 +39,7 @@ ReservaYa es un sistema bajo prueba para actividades de aseguramiento de calidad
 - RF-NF-02: Los datos de reservas de un usuario no deben exponerse a otras cuentas.
 - RF-NF-03: La interfaz debe ser utilizable en dispositivos de escritorio y móviles comunes.
 - RF-NF-04: PostgreSQL es el almacén persistente para cuentas y reservas.
+- RF-NF-05: La aplicación se ejecuta localmente con Node.js, npm y PostgreSQL.
 
 ## Interfaces bajo prueba
 

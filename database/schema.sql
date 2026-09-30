@@ -32,10 +32,15 @@ CREATE TABLE IF NOT EXISTS reservas (
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
     motivo TEXT NOT NULL DEFAULT '',
-    estado VARCHAR(20) NOT NULL DEFAULT 'Pendiente',
+    estado VARCHAR(20) NOT NULL DEFAULT 'Confirmada',
     fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
     CONSTRAINT reservas_estado_valido CHECK (estado IN ('Pendiente', 'Confirmada', 'Cancelada'))
 );
 
+ALTER TABLE reservas ALTER COLUMN estado SET DEFAULT 'Confirmada';
+
 CREATE INDEX IF NOT EXISTS reservas_usuario_fecha_hora_idx
+    ON reservas (usuario_id, fecha, hora);
+
+CREATE UNIQUE INDEX IF NOT EXISTS reservas_usuario_fecha_hora_unique
     ON reservas (usuario_id, fecha, hora);

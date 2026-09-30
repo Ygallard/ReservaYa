@@ -1,35 +1,3 @@
-# ReservaYa - Requerimientos
+# Requisitos
 
-El alcance funcional vigente se encuentra en [requirements.md](requirements.md) e incluye los requisitos de registro, login y gestión de reservas de ReservaYa v2.0.
-
-Las cuentas semilla y los datos sugeridos están descritos en [test-data.md](test-data.md). El [historial de versiones](version-history.md) registra el alcance de v1.0 y v2.0.
-
-## Requisitos funcionales v2.0
-
-| ID | Requisito |
-|---|---|
-| RF-01 | Una persona puede registrarse proporcionando nombre, apellido, correo, contraseña y confirmación. |
-| RF-02 | Nombre, apellido, correo y contraseña son obligatorios. |
-| RF-03 | El correo debe tener formato válido y no puede estar asociado a otra cuenta, sin distinguir mayúsculas. |
-| RF-04 | La contraseña debe tener como mínimo 8 caracteres. |
-| RF-05 | La confirmación de contraseña debe coincidir con la contraseña. |
-| RF-06 | El sistema almacena la contraseña mediante un hash y no la devuelve en respuestas. |
-| RF-07 | Una persona registrada puede iniciar sesión con su correo y contraseña correctos. |
-| RF-08 | El sistema rechaza credenciales incorrectas, no crea una sesión autenticada e informa que las credenciales no son válidas. |
-| RF-09 | Un usuario autenticado puede cerrar sesión. |
-| RF-10 | Solo un usuario autenticado puede acceder al agendamiento y a la lista de reservas. |
-| RF-11 | Una reserva contiene fecha, hora y motivo obligatorios. |
-| RF-12 | El sistema guarda la reserva asociada al usuario autenticado, con estado `Confirmada` y fecha de creación. |
-| RF-13 | El usuario puede visualizar sus reservas con fecha, hora, motivo y estado. |
-| RF-14 | El usuario solo puede consultar sus propias reservas. |
-| RF-15 | Las reservas se muestran en orden ascendente por fecha y hora. |
-| RF-16 | La fecha de una nueva reserva debe ser hoy o posterior. |
-| RF-17 | Las horas disponibles son de 09:00 a 17:00, inclusive. |
-| RF-18 | Un usuario no puede reservar más de una vez el mismo horario. |
-
-## Requisitos de calidad
-
-- **RF-NF-01:** Las credenciales no válidas no deben revelar si el correo está registrado.
-- **RF-NF-02:** Los datos de reservas de un usuario no deben exponerse a otras cuentas.
-- **RF-NF-03:** La interfaz debe ser utilizable en dispositivos de escritorio y móviles comunes.
-- **RF-NF-04:** PostgreSQL es el almacén persistente para cuentas y reservas.
+La especificación vigente de ReservaYa v2.1 está en [requirements.md](requirements.md). Los datos de prueba y el historial se mantienen en [test-data.md](test-data.md) y [version-history.md](version-history.md).

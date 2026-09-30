@@ -1,8 +1,0 @@
-.git
-.gitignore
-.env
-**/.env
-**/node_modules
-**/*.log
-docs/BUGS_DOCENTE.md
-README.md

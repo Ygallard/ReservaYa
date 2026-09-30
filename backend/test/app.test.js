@@ -28,12 +28,19 @@ pool.query = async (sql, values = []) => {
   }
   if (sql.includes('INSERT INTO reservas')) {
     const [usuario_id, fecha, hora, motivo] = values;
-    const reserva = { id: siguienteReserva++, usuario_id, fecha, hora, motivo, estado: 'Pendiente', fecha_creacion: new Date() };
+    if (reservas.some((item) => item.usuario_id === usuario_id && item.fecha === fecha && item.hora === hora)) {
+      const error = new Error('duplicate reservation');
+      error.code = '23505';
+      throw error;
+    }
+    const reserva = { id: siguienteReserva++, usuario_id, fecha, hora, motivo, estado: 'Confirmada', fecha_creacion: new Date() };
     reservas.push(reserva);
     return { rows: [reserva] };
   }
   if (sql.includes('FROM reservas')) {
-    return { rows: reservas.filter((item) => item.usuario_id === values[0]) };
+    return { rows: reservas
+      .filter((item) => item.usuario_id === values[0])
+      .sort((primera, segunda) => `${primera.fecha}${primera.hora}`.localeCompare(`${segunda.fecha}${segunda.hora}`)) };
   }
   throw new Error(`Consulta no simulada: ${sql}`);
 };
@@ -89,14 +96,24 @@ test('reservas requieren sesión y el usuario autenticado crea una reserva propi
     });
     assert.equal(login.status, 200);
     const cookie = login.headers.get('set-cookie').split(';')[0];
-
-    const creada = await fetch(`${base}/api/reservas`, {
+    const ayer = new Date();
+    ayer.setDate(ayer.getDate() - 1);
+    const fechaPasada = `${ayer.getFullYear()}-${String(ayer.getMonth() + 1).padStart(2, '0')}-${String(ayer.getDate()).padStart(2, '0')}`;
+    const crearReserva = (fecha, hora, motivo) => fetch(`${base}/api/reservas`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', cookie },
-      body: JSON.stringify({ fecha: '2030-05-20', hora: '10:30', motivo: 'Consulta' }),
+      body: JSON.stringify({ fecha, hora, motivo }),
     });
+
+    assert.equal((await crearReserva(fechaPasada, '10:30', 'Consulta')).status, 400);
+    assert.equal((await crearReserva('2030-05-20', '08:59', 'Consulta')).status, 400);
+    assert.equal((await crearReserva('2030-05-20', '10:30', '   ')).status, 400);
+
+    const creada = await crearReserva('2030-05-20', '10:30', 'Consulta');
     assert.equal(creada.status, 201);
     assert.equal(reservas.at(-1).usuario_id, 7);
+    assert.equal(reservas.at(-1).estado, 'Confirmada');
+    assert.equal((await crearReserva('2030-05-20', '10:30', 'Otra consulta')).status, 409);
 
     const listado = await fetch(`${base}/api/reservas`, { headers: { cookie } });
     assert.equal(listado.status, 200);

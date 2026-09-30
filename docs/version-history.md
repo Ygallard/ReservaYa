@@ -1,6 +1,6 @@
 # Historial de versiones
 
-## ReservaYa v1.0
+### v1.0
 
 Funcionalidades:
 
@@ -13,11 +13,15 @@ Problemas conocidos corregidos en la nueva versión:
 - Contraseña menor a 8 caracteres.
 - Problemas de validación del registro.
 
-## ReservaYa v2.0
+### v2.0
 
 Nuevas funcionalidades:
 
 - Agendar hora.
 - Ver horas agendadas.
 
-Esta versión contiene nuevos defectos intencionales para actividades educativas de testing.
+### v2.1
+
+- Correcciones y ajustes de la aplicación.
+- Nuevo conjunto de defectos intencionales para laboratorio QA.
+- Ejecución local con Node.js, npm y PostgreSQL.

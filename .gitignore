@@ -1,6 +1,9 @@
 node_modules/
 .env
 *.log
+.DS_Store
+Thumbs.db
 
-# Guía privada del docente: NO debe subirse al repositorio del proyecto
+# Material privado del docente; no distribuir a estudiantes.
+docs/teacher-answer-key.md
 docs/BUGS_DOCENTE.md

@@ -1,6 +1,7 @@
 function crearFilaReserva(reserva) {
   const fila = document.createElement('tr');
-  [reserva.fecha, String(reserva.hora).slice(0, 5), reserva.motivo, reserva.estado].forEach((valor) => {
+  const fecha = new Date(reserva.fecha).toLocaleDateString('es-CL');
+  [fecha, String(reserva.hora).slice(0, 5), reserva.motivo, reserva.estado].forEach((valor) => {
     const celda = document.createElement('td');
     celda.textContent = valor || '—';
     fila.appendChild(celda);

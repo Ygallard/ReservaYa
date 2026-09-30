@@ -1,4 +1,4 @@
-# Datos de prueba
+# Datos de prueba sintéticos
 
 ## Cuentas semilla
 
@@ -25,9 +25,14 @@ Las contraseñas se guardan como hashes bcrypt en la base de datos. No reutiliza
 | Reserva sin motivo | Fecha futura, hora `11:00`, motivo vacío |
 | Reserva repetida | Repetir misma fecha y hora con la misma cuenta |
 | Límites horarios | `08:59`, `09:00`, `17:00`, `17:01` |
+| Intervalo de atención | `09:00`, `09:30`, `09:15`, `17:00` |
+| Hora actual | Para una reserva de hoy, elegir una hora anterior y otra posterior a la hora local actual |
+| Longitud del motivo | Probar 1, 500 y 501 caracteres; la interfaz y la API se pueden probar por separado |
+| Cantidad de reservas | Crear más de 10 reservas en fechas distintas para la misma cuenta |
+| Visualización | Verificar una reserva futura en un equipo configurado con zona horaria local |
 | Fecha pasada | Una fecha anterior a hoy |
 
-Cada estudiante debe inventar y anotar correos únicos para evitar colisiones entre equipos. Para probar aislamiento, utilizar dos cuentas y crear reservas distintas para cada una.
+Cada equipo debe inventar y anotar correos únicos para evitar colisiones. Para probar aislamiento, utilizar dos cuentas y crear reservas distintas para cada una. Los casos con más de 10 reservas pueden usar fechas futuras diferentes para cada registro.
 
 ## PASS / FAIL / BLOCKED
 
